@@ -323,10 +323,7 @@ Convierte una voz en otra.
             )
 
             generate_btn.click(
-                fn=lambda text, model, emotion, speed, chunk, voice: (
-                    None,
-                    f"✅ Generación iniciada\n- Modelo: {model}\n- Emoción: {emotion}\n- Velocidad: {speed}x\n- Caracteres: {len(text) if text else 0}\n\n⏳ Procesando... (Esta es una demostración)"
-                ),
+                fn=generate_speech,
                 inputs=[text_preview, model_v, emotion, speed, chunk_size, voice_sample],
                 outputs=[audio_output, file_status]
             )
