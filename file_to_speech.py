@@ -60,15 +60,21 @@ def extract_text_from_file(file_path: str) -> Tuple[str, str]:
             if not PDF_SUPPORT:
                 return "", "Error: pdfplumber no instalado"
 
-            text_parts = []
-            with pdfplumber.open(file_path) as pdf:
-                for page_num, page in enumerate(pdf.pages, 1):
-                    text = page.extract_text()
-                    if text:
-                        text_parts.append(f"--- Página {page_num} ---\n{text}")
+            try:
+                text_parts = []
+                with pdfplumber.open(file_path) as pdf:
+                    for page_num, page in enumerate(pdf.pages, 1):
+                        text = page.extract_text()
+                        if text:
+                            text_parts.append(f"--- Página {page_num} ---\n{text}")
 
-            text = "\n\n".join(text_parts)
-            return text, "pdf"
+                if not text_parts:
+                    return "", "Error: No se pudo extraer texto del PDF"
+
+                text = "\n\n".join(text_parts)
+                return text, "pdf"
+            except Exception as e:
+                return "", f"Error procesando PDF: {str(e)}"
 
         # ========== DOCX ==========
         elif file_ext == ".docx":
@@ -387,11 +393,11 @@ def process_file(file_obj):
     return text[:5000], status  # Mostrar primeros 5000 caracteres en preview
 
 
-# Función para generar audio (placeholder)
+# Función para generar audio (demostración)
 def generate_speech(text, model, emotion, speed, chunk_size, voice_sample):
     """
-    Genera audio del texto.
-    Nota: Integración con GPT-SoVITS pendiente.
+    Genera audio del texto (demostración).
+    Nota: Integración real con GPT-SoVITS pendiente.
     """
 
     if not text or len(text.strip()) == 0:
@@ -400,36 +406,37 @@ def generate_speech(text, model, emotion, speed, chunk_size, voice_sample):
     if len(text) > 10000:
         return None, f"❌ Texto muy largo ({len(text)} > 10,000 caracteres)"
 
-    import numpy as np
-    sample_rate = 22050
-    duration = len(text) * 0.05
-    frames = int(sample_rate * duration)
-
     try:
-        audio = np.random.randn(frames).astype(np.float32) * 0.1
+        import numpy as np
+        import wave
+
+        sample_rate = 22050
+        duration = max(1, len(text) * 0.05)
+        frames = int(sample_rate * duration)
+
+        # Generar audio de demostración (ruido blanco suave)
+        audio = np.random.randn(frames).astype(np.float32) * 0.05
+        audio_int16 = (audio * 32767).astype(np.int16)
+
+        # Guardar como WAV
         audio_path = tempfile.NamedTemporaryFile(delete=False, suffix=".wav").name
 
-        try:
-            import scipy.io.wavfile as wavfile
-            wavfile.write(audio_path, sample_rate, audio)
-        except:
-            audio = audio * 32767
-            import wave
-            with wave.open(audio_path, 'w') as wav_file:
-                wav_file.setnchannels(1)
-                wav_file.setsampwidth(2)
-                wav_file.setframerate(sample_rate)
-                wav_file.writeframes(audio.astype(np.int16).tobytes())
+        with wave.open(audio_path, 'w') as wav_file:
+            wav_file.setnchannels(1)
+            wav_file.setsampwidth(2)
+            wav_file.setframerate(sample_rate)
+            wav_file.writeframes(audio_int16.tobytes())
 
-        return audio_path, f"""
-✅ Audio generado exitosamente
-- Modelo: {model}
-- Emoción: {emotion}
-- Velocidad: {speed}x
-- Caracteres: {len(text)}
-- Duración aproximada: {duration:.1f}s
+        return audio_path, f"""✅ Audio generado exitosamente (demostración)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 Configuración:
+  • Modelo: {model}
+  • Emoción: {emotion}
+  • Velocidad: {speed}x
+  • Caracteres: {len(text)}
+  • Duración: ~{duration:.1f}s
 
-📝 Para síntesis real, integra con GPT-SoVITS
+📝 Nota: Este es audio de demostración. Para síntesis real, integra GPT-SoVITS.
         """
     except Exception as e:
         return None, f"❌ Error al generar audio: {str(e)}"
