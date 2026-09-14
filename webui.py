@@ -1311,7 +1311,163 @@ with gr.Blocks(title="GPT-SoVITS WebUI", analytics_enabled=False, js=js, css=css
         elem_classes="markdown",
     )
 
-    with gr.Tabs():
+    quickstart_selected = gr.State(value=None)
+
+    with gr.Tabs() as tabs_main:
+        with gr.TabItem("⚡ " + i18n("Inicio Rápido")):
+            gr.HTML("""
+            <style>
+                .quickstart-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                     padding: 20px; border-radius: 10px; color: white; margin-bottom: 20px; }
+                .quickstart-card { border-left: 4px solid #667eea; padding: 15px;
+                                   background: #f8f9fa; border-radius: 5px; margin: 10px 0; }
+                .quickstart-btn { font-weight: bold; padding: 12px 20px; }
+            </style>
+            <div class="quickstart-header">
+                <h1>🚀 ¡Bienvenido a GPT-SoVITS!</h1>
+                <p>Una herramienta poderosa para síntesis de voz basada en IA</p>
+            </div>
+            """)
+
+            gr.Markdown("## " + i18n("¿Por dónde empiezo?") + "\n" + i18n("Elige uno de los caminos abajo según tus necesidades:"))
+
+            with gr.Accordion(label="📚 " + i18n("Opción 1: Usar modelos preentrenados (RÁPIDO)"), open=True):
+                with gr.Row():
+                    with gr.Column(scale=2):
+                        gr.Markdown(
+                            "### ⏱️ " + i18n("Lo más rápido para empezar") + "\n\n"
+                            + i18n("Si deseas sintetizar voz **inmediatamente** sin entrenamiento:") + "\n\n"
+                            + "✅ " + i18n("Solo 4 pasos simples") + "\n"
+                            + "✅ " + i18n("Modelos ya entrenados") + "\n"
+                            + "✅ " + i18n("Resultados en segundos") + "\n\n"
+                            + "**" + i18n("Pasos:") + "**\n"
+                            + "1️⃣ " + i18n("Elige modelo y versión (v2Pro recomendado)") + "\n"
+                            + "2️⃣ " + i18n("Ingresa el texto a sintetizar") + "\n"
+                            + "3️⃣ " + i18n("Configura la voz de referencia") + "\n"
+                            + "4️⃣ " + i18n("¡Genera tu audio!") + "\n"
+                        )
+                    with gr.Column(scale=1):
+                        gr.Button(
+                            value="▶️ " + i18n("Ir a TTS"),
+                            variant="primary",
+                            size="lg",
+                            elem_classes="quickstart-btn"
+                        ).click(fn=lambda: 1, outputs=tabs_main)
+
+            with gr.Accordion(label="🎓 " + i18n("Opción 2: Entrenar tu propio modelo (PERSONALIZADO)"), open=False):
+                with gr.Row():
+                    with gr.Column(scale=2):
+                        gr.Markdown(
+                            "### 🎤 " + i18n("Crea una voz única") + "\n\n"
+                            + i18n("Entrena un modelo personalizado con tu propia voz o la que desees:") + "\n\n"
+                            + "✅ " + i18n("Voz completamente personalizada") + "\n"
+                            + "✅ " + i18n("Herramientas automáticas") + "\n"
+                            + "✅ " + i18n("Control total del resultado") + "\n\n"
+                            + "**" + i18n("Flujo de trabajo:") + "**\n\n"
+                            + "📊 **0. Preparar datos**\n"
+                            + "   → UVR5: Separa voz e instrumentos\n"
+                            + "   → Slicer: Divide en segmentos\n"
+                            + "   → ASR: Transcribe automáticamente\n\n"
+                            + "🔧 **1. Formatear (1A)**\n"
+                            + "   → Prepara los datos en formato requerido\n\n"
+                            + "⚙️ **2. Entrenar (1B)**\n"
+                            + "   → Entrena el modelo (⏱️ 2-24 horas)\n\n"
+                            + "🎵 **3. Usar (1C)**\n"
+                            + "   → Sintetiza con tu modelo personalizado\n"
+                        )
+                    with gr.Column(scale=1):
+                        gr.Button(
+                            value="▶️ " + i18n("Ir a Datos"),
+                            variant="primary",
+                            size="lg",
+                            elem_classes="quickstart-btn"
+                        ).click(fn=lambda: 0, outputs=tabs_main)
+
+            with gr.Accordion(label="🔄 " + i18n("Opción 3: Cambio de voz (TRANSFORMAR)"), open=False):
+                with gr.Row():
+                    with gr.Column(scale=2):
+                        gr.Markdown(
+                            "### 🎭 " + i18n("Transforma voces existentes") + "\n\n"
+                            + i18n("Convierte una voz en otra usando audio de referencia:") + "\n\n"
+                            + "✅ " + i18n("Sin entrenar nuevos modelos") + "\n"
+                            + "✅ " + i18n("Resultados inmediatos") + "\n"
+                            + "✅ " + i18n("Control fino de la voz") + "\n\n"
+                            + "**" + i18n("Cómo funciona:") + "**\n"
+                            + "1️⃣ " + i18n("Carga un audio para transformar") + "\n"
+                            + "2️⃣ " + i18n("Proporciona muestra de voz destino (3-10 segundos)") + "\n"
+                            + "3️⃣ " + i18n("Ajusta parámetros (opcional)") + "\n"
+                            + "4️⃣ " + i18n("¡Obtén el audio transformado!") + "\n"
+                        )
+                    with gr.Column(scale=1):
+                        gr.Button(
+                            value="▶️ " + i18n("Ir a Cambio"),
+                            variant="primary",
+                            size="lg",
+                            elem_classes="quickstart-btn"
+                        ).click(fn=lambda: 2, outputs=tabs_main)
+
+            with gr.Accordion(label="❓ " + i18n("Preguntas frecuentes"), open=False):
+                with gr.Tabs():
+                    with gr.TabItem("🤔 " + i18n("General")):
+                        gr.Markdown(
+                            "### " + i18n("¿Cuál es la mejor opción para mí?") + "\n"
+                            + "| Opción | Tiempo | Complejidad | Personalización |\n"
+                            + "|--------|--------|-------------|------------------|\n"
+                            + "| **TTS Rápido** | Segundos | ⭐ Muy fácil | Baja |\n"
+                            + "| **Entrenar** | Horas | ⭐⭐⭐ Moderada | Alta |\n"
+                            + "| **Cambio voz** | Segundos | ⭐⭐ Fácil | Media |\n\n"
+                            + "### " + i18n("¿Necesito conocimientos técnicos?") + "\n"
+                            + "❌ No. La interfaz es muy amigable. Solo sigue los pasos.\n\n"
+                            + "### " + i18n("¿Puedo cancelar el entrenamiento?") + "\n"
+                            + "✅ Sí. Haz clic en 'Cerrar Proceso' en cualquier momento.\n"
+                        )
+
+                    with gr.TabItem("⚙️ " + i18n("Técnico")):
+                        gr.Markdown(
+                            "### " + i18n("¿Qué versión debo usar?") + "\n"
+                            + "- **v2Pro**: ⭐ Recomendado. Balance calidad/velocidad (NVIDIA 6GB+)\n"
+                            + "- **v2ProPlus**: Mejor calidad (NVIDIA 8GB+)\n"
+                            + "- **v4**: Máxima calidad (NVIDIA 10GB+ o A100)\n"
+                            + "- **v1**: Legacy, no recomendado\n\n"
+                            + "### " + i18n("¿Necesito GPU?") + "\n"
+                            + "**Recomendado:** GPU NVIDIA con 6GB+ VRAM\n"
+                            + "**Funciona sin GPU:** Sí, pero 10-50x más lento\n"
+                            + "**GPUs soportadas:** NVIDIA CUDA (recomendado)\n\n"
+                            + "### " + i18n("¿Qué requisitos de audio?") + "\n"
+                            + "- **Formato:** WAV, MP3, OGG (cualquiera)\n"
+                            + "- **Duración mínima:** 5-10 segundos por muestra\n"
+                            + "- **Duración recomendada:** 1+ minuto de audio\n"
+                            + "- **Frecuencia:** 16kHz-48kHz (16kHz óptimo)\n"
+                            + "- **Calidad:** Limpio, sin ruido de fondo\n"
+                        )
+
+                    with gr.TabItem("📈 " + i18n("Calidad")):
+                        gr.Markdown(
+                            "### " + i18n("¿Cómo mejoro la calidad del audio?") + "\n\n"
+                            + "**Datos de entrenamiento:**\n"
+                            + "1. 🎤 Usa audio de alta calidad (limpio, sin ruido)\n"
+                            + "2. 📊 Más datos = mejor modelo (50+ minutos ideal)\n"
+                            + "3. 🗣️ Misma persona en todo el dataset\n"
+                            + "4. 🔇 Minimiza ruido de fondo\n\n"
+                            + "**Configuración de entrenamiento:**\n"
+                            + "5. ⏱️ Entrena más épocas (200-400 típico)\n"
+                            + "6. 🎯 Usa batch size adecuado para tu GPU\n"
+                            + "7. 🔄 Valida regularmente el progreso\n\n"
+                            + "**Inferencia:**\n"
+                            + "8. 📖 Textos claros y bien estructurados\n"
+                            + "9. 🔊 Audio de referencia claro (3-10 seg)\n"
+                            + "10. 🎛️ Ajusta temperatura y valores de control\n"
+                        )
+
+            gr.Markdown(
+                "---\n\n"
+                + "### 💡 " + i18n("Consejos útiles") + "\n\n"
+                + "🎯 **Comienza rápido:** Prueba TTS (Opción 1) primero\n"
+                + "📖 **Documentación oficial:** https://github.com/RVC-Boss/GPT-SoVITS\n"
+                + "💬 **Comunidad:** Únete a Discord para ayuda\n"
+                + "🐛 **Problemas:** Revisa GitHub Issues\n"
+            )
+
         with gr.TabItem("0-" + i18n("前置数据集获取工具")):  # 提前随机切片防止uvr5爆内存->uvr5->slicer->asr->打标
             with gr.Accordion(label="0a-" + i18n("UVR5人声伴奏分离&去混响去延迟工具")):
                 with gr.Row():
@@ -1971,6 +2127,109 @@ with gr.Blocks(title="GPT-SoVITS WebUI", analytics_enabled=False, js=js, css=css
 
         with gr.TabItem(i18n("2-GPT-SoVITS-变声")):
             gr.Markdown(value=i18n("施工中，请静候佳音"))
+
+        with gr.TabItem("3-File Manager"):
+            gr.Markdown("## Gestor de Archivos - File Manager")
+
+            with gr.Row():
+                with gr.Column():
+                    gr.Markdown("### Subir Archivos de Audio")
+                    audio_file = gr.File(
+                        label="Selecciona archivo de audio",
+                        file_count="single",
+                        file_types=["audio"]
+                    )
+                    audio_upload_btn = gr.Button("Subir Audio")
+                    audio_status = gr.Textbox(
+                        label="Estado",
+                        interactive=False,
+                        value="Esperando archivo..."
+                    )
+
+                with gr.Column():
+                    gr.Markdown("### Subir Modelos")
+                    model_file = gr.File(
+                        label="Selecciona modelo (.pth o .ckpt)",
+                        file_count="single",
+                        file_types=[".pth", ".ckpt"]
+                    )
+                    model_upload_btn = gr.Button("Subir Modelo")
+                    model_status = gr.Textbox(
+                        label="Estado",
+                        interactive=False,
+                        value="Esperando modelo..."
+                    )
+
+            with gr.Row():
+                gr.Markdown("### Archivos en el Servidor")
+
+            with gr.Row():
+                with gr.Column():
+                    gr.Markdown("**Audios:**")
+                    audio_list = gr.Textbox(
+                        label="Lista de audios",
+                        interactive=False,
+                        lines=8
+                    )
+                    refresh_audio_btn = gr.Button("Actualizar lista")
+
+                with gr.Column():
+                    gr.Markdown("**Modelos:**")
+                    model_list = gr.Textbox(
+                        label="Lista de modelos",
+                        interactive=False,
+                        lines=8
+                    )
+                    refresh_model_btn = gr.Button("Actualizar lista")
+
+            def upload_audio(file):
+                if file is None:
+                    return "Por favor selecciona un archivo"
+                try:
+                    audio_dir = os.path.join(now_dir, "uploaded_audio")
+                    os.makedirs(audio_dir, exist_ok=True)
+                    filename = os.path.basename(file.name)
+                    dest = os.path.join(audio_dir, filename)
+                    shutil.copy(file.name, dest)
+                    return f"✓ Archivo '{filename}' subido exitosamente a {audio_dir}"
+                except Exception as e:
+                    return f"✗ Error: {str(e)}"
+
+            def upload_model(file):
+                if file is None:
+                    return "Por favor selecciona un modelo"
+                try:
+                    model_dir = os.path.join(now_dir, "uploaded_models")
+                    os.makedirs(model_dir, exist_ok=True)
+                    filename = os.path.basename(file.name)
+                    dest = os.path.join(model_dir, filename)
+                    shutil.copy(file.name, dest)
+                    return f"✓ Modelo '{filename}' subido exitosamente a {model_dir}"
+                except Exception as e:
+                    return f"✗ Error: {str(e)}"
+
+            def list_audio_files():
+                audio_dir = os.path.join(now_dir, "uploaded_audio")
+                if not os.path.exists(audio_dir):
+                    return "No hay archivos de audio"
+                files = os.listdir(audio_dir)
+                if not files:
+                    return "La carpeta está vacía"
+                return "\n".join([f"• {f}" for f in files])
+
+            def list_model_files():
+                model_dir = os.path.join(now_dir, "uploaded_models")
+                if not os.path.exists(model_dir):
+                    return "No hay modelos"
+                files = [f for f in os.listdir(model_dir) if f.endswith(('.pth', '.ckpt'))]
+                if not files:
+                    return "La carpeta está vacía"
+                return "\n".join([f"• {f}" for f in files])
+
+            audio_upload_btn.click(upload_audio, inputs=[audio_file], outputs=[audio_status])
+            model_upload_btn.click(upload_model, inputs=[model_file], outputs=[model_status])
+            refresh_audio_btn.click(list_audio_files, outputs=[audio_list])
+            refresh_model_btn.click(list_model_files, outputs=[model_list])
 
     app.queue().launch(  # concurrency_count=511, max_size=1022
         server_name="0.0.0.0",
