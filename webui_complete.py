@@ -17,6 +17,7 @@ from file_to_speech import (
     extract_text_from_file,
     validate_file,
     process_file,
+    generate_speech,
     PDF_SUPPORT,
     DOCX_SUPPORT
 )
