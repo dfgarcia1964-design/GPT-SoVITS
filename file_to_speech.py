@@ -65,16 +65,29 @@ def extract_text_from_file(file_path: str) -> Tuple[str, str]:
                 with pdfplumber.open(file_path) as pdf:
                     for page_num, page in enumerate(pdf.pages, 1):
                         text = page.extract_text()
-                        if text:
+                        if text and text.strip():
                             text_parts.append(f"--- Página {page_num} ---\n{text}")
 
                 if not text_parts:
-                    return "", "Error: No se pudo extraer texto del PDF"
+                    return "", (
+                        "⚠️ No se pudo extraer texto del PDF\n\n"
+                        "Posibles causas:\n"
+                        "• PDF escaneado (imagen) - necesita OCR\n"
+                        "• PDF protegido o cifrado\n"
+                        "• PDF sin contenido de texto\n\n"
+                        "Solución: Convierte el PDF a texto con OCR primero"
+                    )
 
                 text = "\n\n".join(text_parts)
                 return text, "pdf"
             except Exception as e:
-                return "", f"Error procesando PDF: {str(e)}"
+                return "", (
+                    f"❌ Error al procesar PDF: {str(e)}\n\n"
+                    "Verifica que:\n"
+                    "• El archivo sea un PDF válido\n"
+                    "• No esté corrupto\n"
+                    "• Tenga permisos de lectura"
+                )
 
         # ========== DOCX ==========
         elif file_ext == ".docx":
